@@ -11,11 +11,11 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping("/user/create")
-    public String createUser(@RequestParam String username, @RequestParam String password){
+    public int createUser(@RequestParam String username, @RequestParam String password){
         User n = new User();
         n.setUsername(username);
         n.setPassword(password);
         userRepository.save(n);
-        return "Saved";
+        return n.getUserID();
     }
 }
