@@ -8,9 +8,7 @@ public class Comment {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer commentID;
 
-    @OneToOne
-    @JoinColumn(name="userid")
-    private User userID;
+    private int userID;
 
     private String message;
 
@@ -22,11 +20,11 @@ public class Comment {
         this.commentID = commentID;
     }
 
-    public User getUserID() {
+    public int getUserID() {
         return userID;
     }
 
-    public void setUserID(User userID) {
+    public void setUserID(int userID) {
         this.userID = userID;
     }
 

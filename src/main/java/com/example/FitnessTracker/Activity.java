@@ -8,9 +8,7 @@ public class Activity {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer activityID;
 
-    @OneToOne
-    @JoinColumn(name="userid")
-    private User userID;
+    private int userID;
 
     private String title;
     private String description;
@@ -27,11 +25,11 @@ public class Activity {
         this.activityID = activityID;
     }
 
-    public User getUserID() {
+    public int getUserID() {
         return userID;
     }
 
-    public void setUserID(User userID) {
+    public void setUserID(int userID) {
         this.userID = userID;
     }
 
