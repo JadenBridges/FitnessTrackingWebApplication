@@ -13,7 +13,7 @@ public class IndividualFeedController {
     @Autowired
     private PostRepository postRepository;
     @Autowired
-    private ActivityRepository activityRepository;
+    private CommentRepository commentRepository;
 
     //---------------------------------------------------------------
     // Method:  getPosts
@@ -77,5 +77,17 @@ public class IndividualFeedController {
         }
 
         return likes;
+    }
+
+    //---------------------------------------------------------------
+    // Method:  createPostComment
+    // Purpose: To create a comment and add it to a specified post.
+    // Inputs:  Comment object of the new comment
+    // Output:  int (1 for success, 0 for failure)
+    //---------------------------------------------------------------
+    @PostMapping("/individualfeed/comment-post")
+    public int createPostComment(@RequestBody Comment new_comment) {
+        // TODO: implement way to link posts and comments in the database
+        return 0;
     }
 }
