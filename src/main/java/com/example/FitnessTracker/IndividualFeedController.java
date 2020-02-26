@@ -25,20 +25,36 @@ public class IndividualFeedController {
     // Output:  arraylist of posts
     //---------------------------------------------------------------
     @GetMapping("/individualfeed/get")
-    public ArrayList<Post> getPosts(@RequestParam int userID) {
+    public ArrayList<PostWithComments> getPosts(@RequestParam int userID) {
+
+        ArrayList<PostWithComments> posts_with_comments = new ArrayList<>();
 
         // get all posts
         ArrayList<Post> posts = (ArrayList<Post>)postRepository.findAll();
-
+        
         // remove posts of other users
         for(Post post : posts) {
-            if(post.getActivity().getUserID().getUserID() != userID) {
+            if(post.getActivity().getUserID() != userID) {
                 posts.remove(post);
             }
         }
 
+        // get all comments
+        ArrayList<Comment> comments = (ArrayList<Comment>)commentRepository.findAll();
+
+        // attach comments to each post
+        for(Post post : posts) {
+            ArrayList<Comment> post_comments = new ArrayList<>();
+            for(Comment comment : comments) {
+                if(comment.getPostID() == post.getPostID()) {
+                    post_comments.add(comment);
+                }
+            }
+            posts_with_comments.add(new PostWithComments(post, post_comments));
+        }
+
         // return only posts for the specified user
-        return posts;
+        return posts_with_comments;
     }
 
     //---------------------------------------------------------------
@@ -97,7 +113,7 @@ public class IndividualFeedController {
         Post post = databaseUtility.getPostById(postID);
 
         // if the post exists and the userID matches that of the userID passed in
-        if((post != null) && (post.getActivity().getUserID().getUserID() == userID)) {
+        if((post != null) && (post.getActivity().getUserID() == userID)) {
             // delete the post
             postRepository.delete(post);
             is_deleted = 1;
