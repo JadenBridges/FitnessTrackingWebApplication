@@ -16,6 +16,32 @@ public class IndividualFeedController {
     private CommentRepository commentRepository;
 
     //---------------------------------------------------------------
+    // Method:  getPostById
+    // Purpose: To find and return a post from the database by its
+    //          postID.
+    // Inputs:  postID
+    // Output:  Post
+    //---------------------------------------------------------------
+    private Post getPostById(int postID) {
+        // create a list of all the postIDs we're looking for
+        // in this case, only one is the postID passed in
+        List<Integer> postIds = Arrays.asList(postID);
+
+        // get Post with the specified ID inside iterable
+        Iterable<Post> posts = postRepository.findAllById(postIds);
+
+        Post post = null;
+
+        // pick the one post from the iterable
+        for(Post temp_post : posts) {
+            post = temp_post;
+            break;
+        }
+
+        return post;
+    }
+
+    //---------------------------------------------------------------
     // Method:  getPosts
     // Purpose: To return all posts in a user's individual feed.
     // Inputs:  userID
@@ -89,5 +115,29 @@ public class IndividualFeedController {
     public int createPostComment(@RequestBody Comment new_comment) {
         // TODO: implement way to link posts and comments in the database
         return 0;
+    }
+
+    //---------------------------------------------------------------
+    // Method:  createPostComment
+    // Purpose: To delete a post from an individual feed if the
+    //          userID passed in matches that of the post.
+    // Inputs:  postID and userID
+    // Output:  int (1 for successful delete, 0 for failure to delete)
+    //---------------------------------------------------------------
+    @DeleteMapping("/individualfeed/delete-post")
+    public int deletePost(@RequestParam int postID, @RequestParam int userID) {
+
+        int is_deleted = 0;
+
+        Post post = getPostById(postID);
+
+        // if the post exists and the userID matches that of the userID passed in
+        if((post != null) && (post.getActivity().getUserID().getUserID() == userID)) {
+            // delete the post
+            postRepository.delete(post);
+            is_deleted = 1;
+        }
+
+        return is_deleted;
     }
 }
