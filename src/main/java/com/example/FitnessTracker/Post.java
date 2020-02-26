@@ -14,10 +14,6 @@ public class Post {
     @JoinColumn(name="activityid")
     private Activity activity;
 
-    @OneToMany
-    @JoinColumn(name="commentid")
-    private List<Comment> comments = new ArrayList<>();
-
     private int likes;
 
 
@@ -35,14 +31,6 @@ public class Post {
 
     public void setActivity(Activity activity) {
         this.activity = activity;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
     }
 
     public int getLikes() {
