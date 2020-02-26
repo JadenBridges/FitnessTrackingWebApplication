@@ -1,5 +1,6 @@
 package com.example.FitnessTracker;
 
+import org.hibernate.dialect.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,31 +16,7 @@ public class IndividualFeedController {
     @Autowired
     private CommentRepository commentRepository;
 
-    //---------------------------------------------------------------
-    // Method:  getPostById
-    // Purpose: To find and return a post from the database by its
-    //          postID.
-    // Inputs:  postID
-    // Output:  Post
-    //---------------------------------------------------------------
-    private Post getPostById(int postID) {
-        // create a list of all the postIDs we're looking for
-        // in this case, only one is the postID passed in
-        List<Integer> postIds = Arrays.asList(postID);
-
-        // get Post with the specified ID inside iterable
-        Iterable<Post> posts = postRepository.findAllById(postIds);
-
-        Post post = null;
-
-        // pick the one post from the iterable
-        for(Post temp_post : posts) {
-            post = temp_post;
-            break;
-        }
-
-        return post;
-    }
+    private DatabaseUtility databaseUtility = new DatabaseUtility();
 
     //---------------------------------------------------------------
     // Method:  getPosts
@@ -77,20 +54,7 @@ public class IndividualFeedController {
 
         int likes = -1;
 
-        // create a list of all the postIDs we're looking for
-        // in this case, only one is the postID passed in
-        List<Integer> postIds = Arrays.asList(postID);
-
-        // get Post with the specified ID inside iterable
-        Iterable<Post> posts = postRepository.findAllById(postIds);
-
-        Post post = null;
-
-        // pick the one post from the iterable
-        for(Post temp_post : posts) {
-            post = temp_post;
-            break;
-        }
+        Post post = databaseUtility.getPostById(postID);
 
         // if the post exists
         if(post != null) {
@@ -107,14 +71,15 @@ public class IndividualFeedController {
 
     //---------------------------------------------------------------
     // Method:  createPostComment
-    // Purpose: To create a comment and add it to a specified post.
-    // Inputs:  Comment object of the new comment
-    // Output:  int (1 for success, 0 for failure)
+    // Purpose: To add a comment to the specified post.
+    // Inputs:  postID and new comment
+    // Output:  void
     //---------------------------------------------------------------
     @PostMapping("/individualfeed/comment-post")
-    public int createPostComment(@RequestBody Comment new_comment) {
-        // TODO: implement way to link posts and comments in the database
-        return 0;
+    public void createPostComment(@RequestBody Comment comment) {
+
+        commentRepository.save(comment);
+
     }
 
     //---------------------------------------------------------------
@@ -129,7 +94,7 @@ public class IndividualFeedController {
 
         int is_deleted = 0;
 
-        Post post = getPostById(postID);
+        Post post = databaseUtility.getPostById(postID);
 
         // if the post exists and the userID matches that of the userID passed in
         if((post != null) && (post.getActivity().getUserID().getUserID() == userID)) {
