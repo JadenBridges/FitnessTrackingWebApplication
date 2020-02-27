@@ -1,11 +1,9 @@
 package com.example.FitnessTracker;
 
-import org.hibernate.dialect.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 public class GroupFeedController
@@ -18,6 +16,8 @@ public class GroupFeedController
     private CommentRepository commentRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private GroupUserLinkRepository groupUserLinkRepository;
 
     private DatabaseUtility databaseUtility = new DatabaseUtility();
 
@@ -31,11 +31,11 @@ public class GroupFeedController
     public ArrayList<Post> getPosts(@RequestParam(name="groupID") int groupID) {
         // get all posts
         ArrayList<Post> posts = (ArrayList<Post>)postRepository.findAll();
-        ArrayList<Group> groups = (ArrayList<Group>)groupRepository.findAll();
-        Group correctGroup = new Group();
+        ArrayList<_Group> groups = (ArrayList<_Group>)groupRepository.findAll();
+        _Group correctGroup = new _Group();
 
         // get the correct group
-        for(Group group : groups)
+        for(_Group group : groups)
         {
             if(group.getGroupID() == groupID) {
                 correctGroup = group;
@@ -43,22 +43,22 @@ public class GroupFeedController
         }
 
         // get users from group
-        ArrayList<User> users = (ArrayList<User>)correctGroup.getUsers();
+        //ArrayList<User> users = (ArrayList<User>)correctGroup;
         boolean partOfGroup;
 
         // remove posts that are not associated with the users of the group
         // for each post, find
-        for (Post post : posts) {
-            partOfGroup = false;
-            for(User user : users) {
-                if (post.getActivity().getUserID() == user.getUserID()) {
-                    partOfGroup = true;
-                }
-            }
-            if (!partOfGroup) {
-                posts.remove(post);
-            }
-        }
+//        for (Post post : posts) {
+//            partOfGroup = false;
+//            for(User user : users) {
+//                if (post.getActivity().getUserID() == user.getUserID()) {
+//                    partOfGroup = true;
+//                }
+//            }
+//            if (!partOfGroup) {
+//                posts.remove(post);
+//            }
+//        }
         // return only posts for the group
         return posts;
     }
@@ -136,12 +136,12 @@ public class GroupFeedController
         User user = databaseUtility.getUserById(userID);
 
         // get group from groupID
-        Group group = databaseUtility.getGroupById(groupID);
+        _Group group = databaseUtility.getGroupById(groupID);
 
         // add user to group
-        ArrayList<User> users = (ArrayList<User>)group.getUsers();
-        users.add(user);
-        group.setUsers(users);
+//        ArrayList<User> users = (ArrayList<User>)group.getUsers();
+//        users.add(user);
+//        group.setUsers(users);
     }
 
     //---------------------------------------------------------------
@@ -158,12 +158,12 @@ public class GroupFeedController
         User user = databaseUtility.getUserById(userID);
 
         // get group from groupID
-        Group group = databaseUtility.getGroupById(groupID);
+        _Group group = databaseUtility.getGroupById(groupID);
 
         // remove user from group
-        ArrayList<User> users = (ArrayList<User>)group.getUsers();
-        userDeleted = users.remove(user);
-        group.setUsers(users);
+//        ArrayList<User> users = (ArrayList<User>)group.getUsers();
+//        userDeleted = users.remove(user);
+//        group.setUsers(users);
 
         return userDeleted;
     }

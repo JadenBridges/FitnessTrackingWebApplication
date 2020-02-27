@@ -77,18 +77,18 @@ public class DatabaseUtility {
     // Inputs:  groupID
     // Output:  Group
     //---------------------------------------------------------------
-    public Group getGroupById(int groupID) {
+    public _Group getGroupById(int groupID) {
         // create a list of all the groupIDs we're looking for
         // in this case, only one is the groupID passed in
         List<Integer> groupIds = Arrays.asList(groupID);
 
         // get Group with the specified ID inside iterable
-        Iterable<Group> groups = groupRepository.findAllById(groupIds);
+        Iterable<_Group> groups = groupRepository.findAllById(groupIds);
 
-        Group group = null;
+        _Group group = null;
 
         // pick the one group from the iterable
-        for(Group temp_group : groups) {
+        for(_Group temp_group : groups) {
             group = temp_group;
             break;
         }
