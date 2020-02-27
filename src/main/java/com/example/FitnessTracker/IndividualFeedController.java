@@ -15,6 +15,8 @@ public class IndividualFeedController {
     private PostRepository postRepository;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     private DatabaseUtility databaseUtility = new DatabaseUtility();
 
@@ -44,12 +46,18 @@ public class IndividualFeedController {
 
         // attach comments to each post
         for(Post post : posts) {
-            ArrayList<Comment> post_comments = new ArrayList<>();
+            ArrayList<CommentDTO> post_comments = new ArrayList<>();
+            // for each comment
             for(Comment comment : comments) {
+                // if comment matches post, keep it
                 if(comment.getPostID() == post.getPostID()) {
-                    post_comments.add(comment);
+                    // get UserDTO for the comment
+                    User user = userRepository.findById(comment.getUserID()).get();
+                    UserDTO userDTO = new UserDTO(user.getUserID(), user.getUsername());
+                    post_comments.add(new CommentDTO(userDTO, comment.getPostID(), comment.getMessage()));
                 }
             }
+
             posts_with_comments.add(new PostWithComments(post, post_comments));
         }
 
@@ -70,7 +78,7 @@ public class IndividualFeedController {
 
         int likes = -1;
 
-        Post post = databaseUtility.getPostById(postID);
+        Post post = postRepository.findById(postID).get();
 
         // if the post exists
         if(post != null) {
@@ -110,7 +118,7 @@ public class IndividualFeedController {
 
         int is_deleted = 0;
 
-        Post post = databaseUtility.getPostById(postID);
+        Post post = postRepository.findById(postID).get();
 
         // if the post exists and the userID matches that of the userID passed in
         if((post != null) && (post.getActivity().getUserID() == userID)) {

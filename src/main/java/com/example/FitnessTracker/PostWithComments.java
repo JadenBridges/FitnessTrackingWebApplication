@@ -5,9 +5,9 @@ import java.util.ArrayList;
 public class PostWithComments {
 
     private Post post;
-    private ArrayList<Comment> comments;
+    private ArrayList<CommentDTO> comments;
 
-    public PostWithComments(Post _post, ArrayList<Comment> _comments) {
+    public PostWithComments(Post _post, ArrayList<CommentDTO> _comments) {
         post = _post;
         comments = _comments;
     }
@@ -20,11 +20,11 @@ public class PostWithComments {
         this.post = post;
     }
 
-    public ArrayList<Comment> getComments() {
+    public ArrayList<CommentDTO> getComments() {
         return comments;
     }
 
-    public void setComments(ArrayList<Comment> comments) {
+    public void setComments(ArrayList<CommentDTO> comments) {
         this.comments = comments;
     }
 }
