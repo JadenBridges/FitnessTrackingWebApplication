@@ -32,6 +32,7 @@ public class GroupFeedController
         // get all posts
         ArrayList<Post> posts = (ArrayList<Post>)postRepository.findAll();
         ArrayList<_Group> groups = (ArrayList<_Group>)groupRepository.findAll();
+        ArrayList<GroupUserLink> links = (ArrayList<GroupUserLink>)groupUserLinkRepository.findAll();
         _Group correctGroup = new _Group();
 
         // get the correct group
@@ -42,23 +43,32 @@ public class GroupFeedController
             }
         }
 
+        ArrayList<User> groupUsers = new ArrayList<User>();
+
         // get users from group
-        //ArrayList<User> users = (ArrayList<User>)correctGroup;
+        // find where group ids are in linking table and add to groupUsers
+        for(GroupUserLink link : links)
+        {
+            if(correctGroup.getGroupID() == link.getGroupID()){
+                groupUsers.add(databaseUtility.getUserById(link.getUserID()));
+            }
+        }
+
         boolean partOfGroup;
 
         // remove posts that are not associated with the users of the group
         // for each post, find
-//        for (Post post : posts) {
-//            partOfGroup = false;
-//            for(User user : users) {
-//                if (post.getActivity().getUserID() == user.getUserID()) {
-//                    partOfGroup = true;
-//                }
-//            }
-//            if (!partOfGroup) {
-//                posts.remove(post);
-//            }
-//        }
+        for (Post post : posts) {
+            partOfGroup = false;
+            for(User user : groupUsers) {
+                if (post.getActivity().getUserID() == user.getUserID()) {
+                    partOfGroup = true;
+                }
+            }
+            if (!partOfGroup) {
+                posts.remove(post);
+            }
+        }
         // return only posts for the group
         return posts;
     }
@@ -132,16 +142,11 @@ public class GroupFeedController
     //---------------------------------------------------------------
     @PostMapping("/groupfeed/adduser")
     public void addUserToGroup(@RequestParam(name="userID") int userID, @RequestParam(name="groupID") int groupID) {
-        // get user from userID
-        User user = databaseUtility.getUserById(userID);
-
-        // get group from groupID
-        _Group group = databaseUtility.getGroupById(groupID);
-
         // add user to group
-//        ArrayList<User> users = (ArrayList<User>)group.getUsers();
-//        users.add(user);
-//        group.setUsers(users);
+        GroupUserLink gul = new GroupUserLink();
+        gul.setGroupID(groupID);
+        gul.setUserID(userID);
+        groupUserLinkRepository.save(gul);
     }
 
     //---------------------------------------------------------------
@@ -154,16 +159,15 @@ public class GroupFeedController
     public boolean removeUserFromGroup(@RequestParam(name="userID") int userID, @RequestParam(name="groupID") int groupID) {
         boolean userDeleted = false;
 
-        // get user from userID
-        User user = databaseUtility.getUserById(userID);
+        ArrayList<GroupUserLink> links = (ArrayList<GroupUserLink>)groupUserLinkRepository.findAll();
 
-        // get group from groupID
-        _Group group = databaseUtility.getGroupById(groupID);
-
-        // remove user from group
-//        ArrayList<User> users = (ArrayList<User>)group.getUsers();
-//        userDeleted = users.remove(user);
-//        group.setUsers(users);
+        for(GroupUserLink link : links){
+            if (link.getGroupID() == groupID && link.getUserID() == userID){
+                userDeleted = true;
+                groupUserLinkRepository.delete(link);
+                break;
+            }
+        }
 
         return userDeleted;
     }
