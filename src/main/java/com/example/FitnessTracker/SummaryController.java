@@ -12,8 +12,12 @@ import java.util.ArrayList;
 
 @RestController
 public class SummaryController {
+    private final SummaryRepository summaryRepository;
     @Autowired
-    private SummaryRepository summaryRepository;
+    public SummaryController(SummaryRepository repo){
+        summaryRepository = repo;
+    }
+
 
     //---------------------------------------------------------------
     // Method:  getSummary

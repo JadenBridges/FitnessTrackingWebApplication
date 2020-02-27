@@ -10,7 +10,8 @@ public class ActivityController {
     @Autowired
     private ActivityRepository activityRepository;
     private DatabaseUtility databaseUtility = new DatabaseUtility();
-    private SummaryController summaryController = new SummaryController();
+    @Autowired
+    private SummaryController summaryController;
 
     //---------------------------------------------------------------
     // Method:  createActivity
@@ -21,7 +22,7 @@ public class ActivityController {
     @PostMapping("/activity/create")
     public int createActivity(@RequestBody Activity activity) {
         activityRepository.save(activity);
-        //summaryController.updateSummary(activity);
+        summaryController.updateSummary(activity);
         return 1;
     }
 
