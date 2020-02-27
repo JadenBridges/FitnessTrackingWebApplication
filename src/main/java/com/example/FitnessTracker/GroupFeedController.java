@@ -3,6 +3,7 @@ package com.example.FitnessTracker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 @RestController
@@ -28,18 +29,21 @@ public class GroupFeedController
     // Output:  arraylist of posts
     //---------------------------------------------------------------
     @GetMapping("/groupfeed/get")
-    public ArrayList<Post> getPosts(@RequestParam(name="groupID") int groupID) {
-        // get all posts
+    public ArrayList<PostWithComments> getPosts(@RequestParam(name="groupID") int groupID) {
+        // get all posts, groups, and links
         ArrayList<Post> posts = (ArrayList<Post>)postRepository.findAll();
         ArrayList<_Group> groups = (ArrayList<_Group>)groupRepository.findAll();
         ArrayList<GroupUserLink> links = (ArrayList<GroupUserLink>)groupUserLinkRepository.findAll();
         _Group correctGroup = new _Group();
+
+        ArrayList<PostWithComments> posts_with_comments = new ArrayList<>();
 
         // get the correct group
         for(_Group group : groups)
         {
             if(group.getGroupID() == groupID) {
                 correctGroup = group;
+                break;
             }
         }
 
@@ -55,6 +59,7 @@ public class GroupFeedController
         }
 
         boolean partOfGroup;
+        ArrayList<Post> correctPosts = new ArrayList<Post>();
 
         // remove posts that are not associated with the users of the group
         // for each post, find
@@ -62,15 +67,34 @@ public class GroupFeedController
             partOfGroup = false;
             for(User user : groupUsers) {
                 if (post.getActivity().getUserID() == user.getUserID()) {
-                    partOfGroup = true;
+                    correctPosts.add(post);
+                    break;
                 }
             }
-            if (!partOfGroup) {
-                posts.remove(post);
-            }
         }
-        // return only posts for the group
-        return posts;
+
+        // get all comments
+        ArrayList<Comment> comments = (ArrayList<Comment>)commentRepository.findAll();
+
+        // attach comments to each post
+        for(Post post : posts) {
+            ArrayList<CommentDTO> post_comments = new ArrayList<>();
+            // for each comment
+            for(Comment comment : comments) {
+                // if comment matches post, keep it
+                if(comment.getPostID() == post.getPostID()) {
+                    // get UserDTO for the comment
+                    User user = userRepository.findById(comment.getUserID()).get();
+                    UserDTO userDTO = new UserDTO(user.getUserID(), user.getUsername());
+                    post_comments.add(new CommentDTO(userDTO, comment.getPostID(), comment.getMessage()));
+                }
+            }
+
+            posts_with_comments.add(new PostWithComments(post, post_comments));
+        }
+
+        // return only posts for the specified group
+        return posts_with_comments;
     }
 
     //---------------------------------------------------------------
@@ -168,6 +192,20 @@ public class GroupFeedController
                 break;
             }
         }
+
+        return userDeleted;
+    }
+}
+
+    //---------------------------------------------------------------
+    // Method:  createGroup
+    // Purpose: To create a group for users to join
+    // Inputs:  userID and groupID
+    // Output:  int (1 for successful delete, 0 for failure to delete)
+    //---------------------------------------------------------------
+    @PostMapping("/groupfeed/creategroup")
+    public boolean createGroup(@RequestParam(name="userID") int userID, @RequestParam(name="groupID") int groupID) {
+        
 
         return userDeleted;
     }
