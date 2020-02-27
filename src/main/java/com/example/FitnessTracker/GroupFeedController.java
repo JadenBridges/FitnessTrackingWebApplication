@@ -21,6 +21,8 @@ public class GroupFeedController
     private GroupUserLinkRepository groupUserLinkRepository;
 
     private DatabaseUtility databaseUtility = new DatabaseUtility();
+    private int gulid = 0;
+    private int gID = 0;
 
     //---------------------------------------------------------------
     // Method:  getPosts
@@ -32,20 +34,12 @@ public class GroupFeedController
     public ArrayList<PostWithComments> getPosts(@RequestParam(name="groupID") int groupID) {
         // get all posts, groups, and links
         ArrayList<Post> posts = (ArrayList<Post>)postRepository.findAll();
-        ArrayList<_Group> groups = (ArrayList<_Group>)groupRepository.findAll();
         ArrayList<GroupUserLink> links = (ArrayList<GroupUserLink>)groupUserLinkRepository.findAll();
-        _Group correctGroup = new _Group();
 
         ArrayList<PostWithComments> posts_with_comments = new ArrayList<>();
 
         // get the correct group
-        for(_Group group : groups)
-        {
-            if(group.getGroupID() == groupID) {
-                correctGroup = group;
-                break;
-            }
-        }
+        _Group correctGroup = groupRepository.findById(groupID).get();
 
         ArrayList<User> groupUsers = new ArrayList<User>();
 
@@ -54,7 +48,7 @@ public class GroupFeedController
         for(GroupUserLink link : links)
         {
             if(correctGroup.getGroupID() == link.getGroupID()){
-                groupUsers.add(databaseUtility.getUserById(link.getUserID()));
+                groupUsers.add(userRepository.findById(link.getUserID()).get());
             }
         }
 
@@ -62,7 +56,7 @@ public class GroupFeedController
         ArrayList<Post> correctPosts = new ArrayList<Post>();
 
         // remove posts that are not associated with the users of the group
-        // for each post, find
+        // for each post, find where user ids are equal
         for (Post post : posts) {
             partOfGroup = false;
             for(User user : groupUsers) {
@@ -165,12 +159,14 @@ public class GroupFeedController
     // Output:  int (1 for successful delete, 0 for failure to delete)
     //---------------------------------------------------------------
     @PostMapping("/groupfeed/adduser")
-    public void addUserToGroup(@RequestParam(name="userID") int userID, @RequestParam(name="groupID") int groupID) {
+    public int addUserToGroup(@RequestParam(name="userID") int userID, @RequestParam(name="groupID") int groupID) {
         // add user to group
         GroupUserLink gul = new GroupUserLink();
         gul.setGroupID(groupID);
         gul.setUserID(userID);
         groupUserLinkRepository.save(gul);
+
+        return gul.getLinkID();
     }
 
     //---------------------------------------------------------------
@@ -180,14 +176,14 @@ public class GroupFeedController
     // Output:  boolean (true for successful delete, false for failure to delete)
     //---------------------------------------------------------------
     @PutMapping("/groupfeed/removeuser")
-    public boolean removeUserFromGroup(@RequestParam(name="userID") int userID, @RequestParam(name="groupID") int groupID) {
-        boolean userDeleted = false;
+    public int removeUserFromGroup(@RequestParam(name="userID") int userID, @RequestParam(name="groupID") int groupID) {
+        int userDeleted = 0;
 
         ArrayList<GroupUserLink> links = (ArrayList<GroupUserLink>)groupUserLinkRepository.findAll();
 
         for(GroupUserLink link : links){
             if (link.getGroupID() == groupID && link.getUserID() == userID){
-                userDeleted = true;
+                userDeleted = 1;
                 groupUserLinkRepository.delete(link);
                 break;
             }
@@ -195,18 +191,21 @@ public class GroupFeedController
 
         return userDeleted;
     }
-}
 
     //---------------------------------------------------------------
     // Method:  createGroup
     // Purpose: To create a group for users to join
-    // Inputs:  userID and groupID
+    // Inputs:  userID
     // Output:  int (1 for successful delete, 0 for failure to delete)
     //---------------------------------------------------------------
-    @PostMapping("/groupfeed/creategroup")
-    public boolean createGroup(@RequestParam(name="userID") int userID, @RequestParam(name="groupID") int groupID) {
-        
+    @PostMapping("/groupfeed/create")
+    public int createGroup(@RequestParam(name="userID") int userID) {
+        _Group group = new _Group();
+        group.setOwner(userID);
+        //group.setGroupID(gID);
+        groupRepository.save(group);
+        addUserToGroup(userID, group.getGroupID());
 
-        return userDeleted;
+        return group.getGroupID();
     }
 }

@@ -147,4 +147,30 @@ public class DatabaseUtility {
 
         return activity;
     }
+
+//    //---------------------------------------------------------------
+//    // Method:  checkUserExists
+//    // Purpose: To check the database to see if the requested user
+//    //          exists.
+//    // Inputs:  userID
+//    // Output:  int (1 = user exists, 0 = user does not exist)
+//    //---------------------------------------------------------------
+//    public int checkUserExists(int userID) {
+//        // create a list of all the activityIDs we're looking for
+//        // in this case, only one is the activityID passed in
+//        List<Integer> activityIds = Arrays.asList(activityID);
+//
+//        // get Activity with the specified ID inside iterable
+//        Iterable<Activity> activities = activityRepository.findAllById(activityIds);
+//
+//        Activity activity = null;
+//
+//        // pick the one activity from the iterable
+//        for(Activity temp_activity : activities) {
+//            activity = temp_activity;
+//            break;
+//        }
+//
+//        return activity;
+//    }
 }
