@@ -25,14 +25,14 @@ public class UserController {
         n.setUsername(username);
         n.setPassword(password);
         userRepository.save(n);
-        return n.getUserID();
+        return 1;
     }
 
     //---------------------------------------------------------------
     // Method:  userLogin
     // Purpose: To login as a specific user
     // Inputs:  username,password
-    // Output:  userID if successful, 0 if not
+    // Output:  1 if successful, 0 if not
     //---------------------------------------------------------------
 
     @GetMapping ("user/login")
@@ -45,7 +45,7 @@ public class UserController {
                 }
             }
         }
-        return 0;
+        return 1;
     }
 
 }
