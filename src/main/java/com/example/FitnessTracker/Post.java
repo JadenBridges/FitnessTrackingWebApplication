@@ -16,7 +16,6 @@ public class Post {
 
     private int likes;
 
-
     public Integer getPostID() {
         return postID;
     }
