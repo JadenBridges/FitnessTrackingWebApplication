@@ -4,13 +4,11 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Group {
+// underscore due to group being a reserved word in MySQL
+public class _Group {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer groupID;
-
-    @ManyToMany(mappedBy="group")
-    private List<User> users;
 
     private int owner;
 
@@ -28,13 +26,5 @@ public class Group {
 
     public void setOwner(int owner) {
         this.owner = owner;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
     }
 }
