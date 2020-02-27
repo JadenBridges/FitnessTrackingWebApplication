@@ -6,9 +6,10 @@ public class CommentDTO {
     private int postID;
     private String message;
 
-    public CommentDTO(UserDTO _userDTO, int _postID, String message) {
+    public CommentDTO(UserDTO _userDTO, int _postID, String _message) {
         userDTO = _userDTO;
         postID = _postID;
+        message = _message;
     }
 
     public UserDTO getUserDTO() {
