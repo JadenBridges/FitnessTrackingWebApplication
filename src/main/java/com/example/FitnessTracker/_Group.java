@@ -12,6 +12,12 @@ public class _Group {
 
     private int owner;
 
+    public _Group(){}
+
+    public _Group(int owner){
+        this.owner = owner;
+    }
+
     public Integer getGroupID() {
         return groupID;
     }

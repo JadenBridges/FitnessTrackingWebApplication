@@ -10,8 +10,13 @@ import java.util.ArrayList;
 
 @RestController
 public class UserController {
-    @Autowired
+
     private UserRepository userRepository;
+
+    @Autowired
+    public UserController(UserRepository repo){
+        userRepository = repo;
+    }
 
     //---------------------------------------------------------------
     // Method:  createUser
@@ -21,6 +26,11 @@ public class UserController {
     //---------------------------------------------------------------
     @PostMapping("/user/create")
     public int createUser(@RequestParam String username, @RequestParam String password){
+        ArrayList<User> userArrayList = (ArrayList<User>) userRepository.findAll();
+        for(User user1 : userArrayList) {
+            if(user1.getUsername().equals(username))
+                return 0;
+        }
         User n = new User(username, password);
         userRepository.save(n);
         return 1;

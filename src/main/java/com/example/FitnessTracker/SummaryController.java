@@ -43,11 +43,11 @@ public class SummaryController {
                 if(summary.getDistance()>longest_run)
                     longest_run = summary.getDistance();
             }
-            else return "No available data on user";
+            else return "No available data on user or user does not exist";
         }
         int[] pace_min = splitToComponentTimes(fastest_run);
 
-        return "Total distance of this user: " + distance.toString() + "\n" +"Longest run of this user: " + longest_run.toString() + "\n" + "Fastest run of this user : " + pace_min[0] + pace_min[1]+":" + pace_min[2];
+        return "Total distance of this user:" + distance.toString() + "\n" +"Longest run of this user:" + longest_run.toString() + "\n" + "Fastest run of this user:" + pace_min[0] + pace_min[1]+":" + pace_min[2];
     }
 
     //---------------------------------------------------------------
