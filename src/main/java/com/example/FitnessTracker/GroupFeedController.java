@@ -71,7 +71,7 @@ public class GroupFeedController
         ArrayList<Comment> comments = (ArrayList<Comment>)commentRepository.findAll();
 
         // attach comments to each post
-        for(Post post : posts) {
+        for(Post post : correctPosts) {
             ArrayList<CommentDTO> post_comments = new ArrayList<>();
             // for each comment
             for(Comment comment : comments) {
