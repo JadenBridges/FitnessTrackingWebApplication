@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NamedQuery(name = "Post.findByActivityID",
+        query = "select p from Post p where p.activity.activityID = ?1")
 public class Post {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -15,6 +17,13 @@ public class Post {
     private Activity activity;
 
     private int likes;
+
+    public Post(){}
+
+    public Post(Activity activity, int likes){
+        this.activity = activity;
+        this.likes = likes;
+    }
 
     public Integer getPostID() {
         return postID;

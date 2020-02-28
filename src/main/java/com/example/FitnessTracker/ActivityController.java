@@ -9,6 +9,8 @@ import java.util.Optional;
 public class ActivityController {
     @Autowired
     private ActivityRepository activityRepository;
+    @Autowired
+    private PostRepository postRepository;
     private DatabaseUtility databaseUtility = new DatabaseUtility();
     @Autowired
     private SummaryController summaryController;
@@ -23,6 +25,7 @@ public class ActivityController {
     public int createActivity(@RequestBody Activity activity) {
         activityRepository.save(activity);
         summaryController.updateSummary(activity);
+        postRepository.save(new Post(activity, 0));
         return 1;
     }
 

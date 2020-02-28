@@ -17,6 +17,18 @@ public class Activity {
     private int minutes;
     private int seconds;
 
+    public Activity(){}
+
+    public Activity(int userID, String title, String description, double distance, int hours, int minutes, int seconds) {
+        this.userID = userID;
+        this.title = title;
+        this.description = description;
+        this.distance = distance;
+        this.hours = hours;
+        this.minutes = minutes;
+        this.seconds = seconds;
+    }
+
     public Integer getActivityID() {
         return activityID;
     }
