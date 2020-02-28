@@ -35,11 +35,7 @@ public class IndividualFeedController {
         ArrayList<Post> posts = (ArrayList<Post>)postRepository.findAll();
         
         // remove posts of other users
-        for(Post post : posts) {
-            if(post.getActivity().getUserID() != userID) {
-                posts.remove(post);
-            }
-        }
+        posts.removeIf(post -> post.getActivity().getUserID() != userID);
 
         // get all comments
         ArrayList<Comment> comments = (ArrayList<Comment>)commentRepository.findAll();
