@@ -38,11 +38,11 @@ public class SummaryController {
                 distance = summary.getTotal_distance();
                 pace = summary.getPace();
                 input = splitToComponentTimes(pace);
+                return "Total distance of this user:" + distance + "\n" +"Quickest run of user: " + input[0] + input[1]+":"+input[2];
             }
-            else return "No available data on user or user does not exist";
+            else return "No available data on user";
         }
-
-        return "Total distance of this user:" + distance + "\n" +"Quickest run of user: " + input[0] + input[1]+":"+input[2];
+        return "No available data on user";
     }
 
     //---------------------------------------------------------------

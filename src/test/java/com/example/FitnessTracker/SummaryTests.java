@@ -40,15 +40,15 @@ public class SummaryTests {
     //passing in an invalid userID
     @Test
     void unhappyGetSummary(){
-        String input = summaryController.getSummary(345678);
-        Assertions.assertEquals("No available data on user or user does not exist",input);
+        String input = summaryController.getSummary(5);
+        Assertions.assertEquals("No available data on user",input);
 
     }
     //user exists but no data in summary
     @Test
     void unhappy2GetSummary(){
         String input = summaryController.getSummary(2);
-        Assertions.assertEquals(input,"No available data on user or user does not exist");
+        Assertions.assertEquals(input,"No available data on user");
     }
 
 }

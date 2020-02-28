@@ -51,6 +51,7 @@ public class UserTests {
         userRepository.save(user);
         Integer input = userController.loginUser("test1","pass1");
         Assertions.assertEquals(input,user.getUserID());
+        userRepository.delete(user);
     }
     //Invalid username & password
     @Test
@@ -63,9 +64,9 @@ public class UserTests {
     //Invalid Password
     @Test
     void unhappy2UserLogin(){
-        User user = new User("test", "pass");
+        User user = new User("test2", "pass");
         userRepository.save(user);
-        Integer input = userController.loginUser("test","fakepassword");
+        Integer input = userController.loginUser("test2","fakepassword");
         Assertions.assertEquals(input,1);
     }
 }
