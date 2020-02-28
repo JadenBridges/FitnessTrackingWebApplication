@@ -11,6 +11,8 @@ public class ActivityController {
     private ActivityRepository activityRepository;
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private UserRepository userRepository;
     private DatabaseUtility databaseUtility = new DatabaseUtility();
     @Autowired
     private SummaryController summaryController;
@@ -23,10 +25,18 @@ public class ActivityController {
     //---------------------------------------------------------------
     @PostMapping("/activity/create")
     public int createActivity(@RequestBody Activity activity) {
-        activityRepository.save(activity);
-        summaryController.updateSummary(activity);
-        postRepository.save(new Post(activity, 0));
-        return 1;
+        if(!userRepository.findById(activity.getUserID()).isPresent()){
+            return -1;
+        }
+        else if(activity.getDistance() < 0 || activity.getHours() < 0 || activity.getMinutes() < 0 || activity.getSeconds() < 0){
+            return -1;
+        }
+        else{
+            activityRepository.save(activity);
+            summaryController.updateSummary(activity);
+            postRepository.save(new Post(activity, 0));
+            return 1;
+        }
     }
 
     //---------------------------------------------------------------
@@ -37,7 +47,10 @@ public class ActivityController {
     //---------------------------------------------------------------
     @PutMapping("/activity/update")
     public int updateActivity(@RequestParam int activityID, @RequestBody Activity activity) {
-        if(activityRepository.findById(activityID).isPresent()){
+        if(activity.getDistance() < 0 || activity.getHours() < 0 || activity.getMinutes() < 0 || activity.getSeconds() < 0){
+            return -1;
+        }
+        else if(activityRepository.findById(activityID).isPresent()){
             Activity oldActivity = activityRepository.findById(activityID).get();
             oldActivity.setUserID(activity.getUserID());
             oldActivity.setTitle(activity.getTitle());

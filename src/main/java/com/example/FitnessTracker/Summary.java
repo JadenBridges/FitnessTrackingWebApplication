@@ -1,11 +1,10 @@
 package com.example.FitnessTracker;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@NamedQuery(name = "Summary.findByUserID",
+        query = "select s from Summary s where s.userID = ?1")
 public class Summary {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
