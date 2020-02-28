@@ -27,18 +27,16 @@ public class SummaryTests {
     //-------------------------------------------------------------------------
     @Test
     void happyGetSummary(){
-        User user = new User("uniqueuser2", "pwd");
-        userRepository.save(user);
         Summary summary = new Summary();
-        summary.setUserID(user.getUserID());
+        summary.setUserID(1);
         summary.setPace(420.2);
         summary.setDistance(10.0);
         summaryRepository.save(summary);
 
-        String input = summaryController.getSummary(user.getUserID());
+        String input = summaryController.getSummary(1);
         Assertions.assertEquals("Total distance of this user:10.0\n" +
                 "Longest run of this user:10.0\n" +
-                "Fastest run of this user:00:0", input);
+                "Fastest run of this user:07:0", input);
     }
     //passing in an invalid userID
     @Test
