@@ -75,6 +75,7 @@ public class ActivityController {
     @DeleteMapping("/activity/delete")
     public int deleteActivity(@RequestParam int activityID) {
         if(activityRepository.findById(activityID).isPresent()){
+            postRepository.delete(postRepository.findByActivityID(activityID));
             activityRepository.delete(activityRepository.findById(activityID).get());
             return 1;
         }
