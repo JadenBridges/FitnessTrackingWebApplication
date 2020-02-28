@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 public class IndividualFeedController {
@@ -28,6 +29,11 @@ public class IndividualFeedController {
     //---------------------------------------------------------------
     @GetMapping("/individualfeed/get")
     public ArrayList<PostWithComments> getPosts(@RequestParam int userID) {
+
+        // userID must be >= 1
+        if(userID < 1) {
+            return null;
+        }
 
         ArrayList<PostWithComments> posts_with_comments = new ArrayList<>();
 
@@ -72,34 +78,42 @@ public class IndividualFeedController {
     @PutMapping("/individualfeed/like-post")
     public int updatePostLikes(@RequestParam int postID) {
 
-        int likes = -1;
-
-        Post post = postRepository.findById(postID).get();
-
-        // if the post exists
-        if(post != null) {
-            // increment the number of its likes
-            post.setLikes(post.getLikes()+1);
-            // update the post entry in the database with the new number of likes
-            postRepository.save(post);
-            // get the new number of likes
-            likes = post.getLikes();
+        if(postID < 1) {
+            return -2;
         }
 
-        return likes;
+        Post post;
+
+        try {
+            post = postRepository.findById(postID).get();
+        } catch(NoSuchElementException e) {
+            return -1;
+        }
+
+        // post exists
+        // increment the number of its likes
+        post.setLikes(post.getLikes()+1);
+        // update the post entry in the database with the new number of likes
+        postRepository.save(post);
+        // get the new number of likes
+        return post.getLikes();
     }
 
     //---------------------------------------------------------------
     // Method:  createPostComment
     // Purpose: To add a comment to the specified post.
     // Inputs:  postID and new comment
-    // Output:  void
+    // Output:  int
     //---------------------------------------------------------------
     @PostMapping("/individualfeed/comment-post")
-    public void createPostComment(@RequestBody Comment comment) {
+    public int createPostComment(@RequestBody Comment comment) {
+        if(comment.getPostID() < 0 || comment.getUserID() < 0) {
+            return -1;
+        }
 
         commentRepository.save(comment);
 
+        return 0;
     }
 
     //---------------------------------------------------------------
@@ -114,10 +128,16 @@ public class IndividualFeedController {
 
         int is_deleted = 0;
 
-        Post post = postRepository.findById(postID).get();
+        Post post;
+
+        try {
+            post = postRepository.findById(postID).get();
+        } catch(NoSuchElementException e) {
+            return -1;
+        }
 
         // if the post exists and the userID matches that of the userID passed in
-        if((post != null) && (post.getActivity().getUserID() == userID)) {
+        if(post.getActivity().getUserID() == userID) {
             // delete the post
             postRepository.delete(post);
             is_deleted = 1;
