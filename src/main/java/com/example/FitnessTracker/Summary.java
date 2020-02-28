@@ -11,7 +11,7 @@ public class Summary {
     private Integer summaryID;
 
     private Integer userID;
-    private Double distance;
+    private Double total_distance;
     private Double pace;
 
     public Integer getSummaryID() {
@@ -30,12 +30,12 @@ public class Summary {
         this.userID = userID;
     }
 
-    public Double getDistance() {
-        return distance;
+    public Double getTotal_distance() {
+        return total_distance;
     }
 
-    public void setDistance(Double distance) {
-        this.distance = distance;
+    public void setTotal_distance(Double distance) {
+        this.total_distance = distance;
     }
 
 

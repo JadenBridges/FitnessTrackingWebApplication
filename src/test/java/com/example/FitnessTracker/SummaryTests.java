@@ -28,21 +28,20 @@ public class SummaryTests {
     @Test
     void happyGetSummary(){
         Summary summary = new Summary();
-        summary.setUserID(1);
+        summary.setUserID(3);
         summary.setPace(420.2);
-        summary.setDistance(10.0);
+        summary.setTotal_distance(50.0);
         summaryRepository.save(summary);
 
-        String input = summaryController.getSummary(1);
-        Assertions.assertEquals("Total distance of this user:10.0\n" +
-                "Longest run of this user:10.0\n" +
-                "Fastest run of this user:07:0", input);
+        String input = summaryController.getSummary(3);
+        Assertions.assertEquals("Total distance of this user:50.0\n" +
+                                "Quickest run of user: 07:0", input);
     }
     //passing in an invalid userID
     @Test
     void unhappyGetSummary(){
         String input = summaryController.getSummary(345678);
-        Assertions.assertEquals(input,"No available data on user or user does not exist");
+        Assertions.assertEquals("No available data on user or user does not exist",input);
 
     }
     //user exists but no data in summary

@@ -2,7 +2,6 @@ package com.example.FitnessTracker;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,26 +27,22 @@ public class SummaryController {
     @GetMapping("/summary/get")
     public String getSummary(@RequestParam Integer userID) {
         Double distance = 0.0;
-        Double longest_run = 0.0;
-        Double fastest_run = 0.0;
+        Double pace=0.0;
+        int[] input= {1,2};
+
         ArrayList<Summary> summaries = (ArrayList<Summary>) summaryRepository.findAll();
 
 
         for(Summary summary : summaries ){
             if(summary.getUserID()==userID){
-                distance += summary.getDistance();
-                if(summary.getSummaryID() ==1)
-                    fastest_run = summary.getPace();
-                else if(summary.getPace()<fastest_run)
-                    fastest_run = summary.getPace();
-                if(summary.getDistance()>longest_run)
-                    longest_run = summary.getDistance();
+                distance = summary.getTotal_distance();
+                pace = summary.getPace();
+                input = splitToComponentTimes(pace);
             }
             else return "No available data on user or user does not exist";
         }
-        int[] pace_min = splitToComponentTimes(fastest_run);
 
-        return "Total distance of this user:" + distance.toString() + "\n" +"Longest run of this user:" + longest_run.toString() + "\n" + "Fastest run of this user:" + pace_min[0] + pace_min[1]+":" + pace_min[2];
+        return "Total distance of this user:" + distance + "\n" +"Quickest run of user: " + input[0] + input[1]+":"+input[2];
     }
 
     //---------------------------------------------------------------
@@ -57,17 +52,29 @@ public class SummaryController {
     // Output:  activtyID of summary being updated else zero
     //---------------------------------------------------------------
 
-    public void updateSummary(Activity activity){
+    public void updateSummary(Activity activity) {
         Double pace;
-        Integer time;
-        time = activity.getHours()*3600 + activity.getMinutes()*60 + activity.getSeconds();
-        pace = time/activity.getDistance();
-        Summary newSummary = new Summary();
-        newSummary.setUserID(activity.getUserID());
-        newSummary.setDistance(activity.getDistance());
-        newSummary.setPace(pace);
-        summaryRepository.save(newSummary);
+        Boolean flag = false;
 
+        Integer time;
+        time = activity.getHours() * 3600 + activity.getMinutes() * 60 + activity.getSeconds();
+        pace = time / activity.getDistance();
+        ArrayList<Summary> summaries = (ArrayList<Summary>) summaryRepository.findAll();
+        for (Summary summary : summaries) {
+            if (activity.getUserID() == summary.getUserID()) {
+                flag = true;
+                summary.setTotal_distance(summary.getTotal_distance() + activity.getDistance());
+                if (summary.getPace() > pace)
+                    summary.setPace(pace);
+            }
+        }
+        if (!flag) {
+            Summary newSummary = new Summary();
+            newSummary.setUserID(activity.getUserID());
+            newSummary.setTotal_distance(activity.getDistance());
+            newSummary.setPace(pace);
+            summaryRepository.save(newSummary);
+        }
 
     }
 
