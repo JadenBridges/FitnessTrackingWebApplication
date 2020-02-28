@@ -10,10 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class UserTests {
 
     private final UserRepository userRepository;
+    private final UserController userController;
 
     @Autowired
-    public UserTests( UserRepository ur){
+    public UserTests(UserController ifc, UserRepository ur){
         userRepository = ur;
+        userController = ifc;
+
     }
 
     //-------------------------------------------------------------------------
@@ -24,38 +27,45 @@ public class UserTests {
     //		  POST | /user/create                 | createUser(string,string)
     //		   Get | /user/login                  | loginUser(string,string)
     //-------------------------------------------------------------------------
+
+
+    //Create a new user Test
     @Test
-    void getUser(){
-    UserController usc = new UserController(userRepository);
-    Integer input = usc.createUser("test","test");
+    void happyGetUser(){
+    Integer input = userController.createUser("test","test");
         Assertions.assertEquals(input,1);
+    }
+
+    //try to create new account with existing username
+    @Test
+    void unhappyGetUser(){
+        Integer input = userController.createUser("test","test");
+        Assertions.assertEquals(input,0);
+
     }
 
     //Valid credentials
     @Test
     void happyUserLogin(){
-        UserController usc = new UserController(userRepository);
-        User user = new User("test", "pass");
+        User user = new User("test1", "pass1");
         userRepository.save(user);
-        Integer input = usc.loginUser("test","pass");
+        Integer input = userController.loginUser("test1","pass1");
         Assertions.assertEquals(input,user.getUserID());
     }
     //Invalid username & password
     @Test
     void unhappy1UserLogin(){
-        UserController usc = new UserController(userRepository);
         User user = new User("test", "pass");
         userRepository.save(user);
-        Integer input = usc.loginUser("fakeusername","fakepassword");
+        Integer input = userController.loginUser("fakeusername","fakepassword");
         Assertions.assertEquals(input,1);
     }
     //Invalid Password
     @Test
     void unhappy2UserLogin(){
-        UserController usc = new UserController(userRepository);
         User user = new User("test", "pass");
         userRepository.save(user);
-        Integer input = usc.loginUser("test","fakepassword");
+        Integer input = userController.loginUser("test","fakepassword");
         Assertions.assertEquals(input,1);
     }
 }
