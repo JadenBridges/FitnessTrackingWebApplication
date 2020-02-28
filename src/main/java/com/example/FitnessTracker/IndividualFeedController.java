@@ -37,30 +37,22 @@ public class IndividualFeedController {
 
         ArrayList<PostWithComments> posts_with_comments = new ArrayList<>();
 
-        // get all posts
-        ArrayList<Post> posts = (ArrayList<Post>)postRepository.findAll();
-        
-        // remove posts of other users
-        posts.removeIf(post -> post.getActivity().getUserID() != userID);
+        // get all posts for specified user
+        ArrayList<Post> posts = postRepository.findAllByUserID(userID);
 
-        // get all comments
-        ArrayList<Comment> comments = (ArrayList<Comment>)commentRepository.findAll();
-
-        // attach comments to each post
+        // get all comments for the posts and attach them
         for(Post post : posts) {
-            ArrayList<CommentDTO> post_comments = new ArrayList<>();
-            // for each comment
-            for(Comment comment : comments) {
-                // if comment matches post, keep it
-                if(comment.getPostID() == post.getPostID()) {
-                    // get UserDTO for the comment
-                    User user = userRepository.findById(comment.getUserID()).get();
-                    UserDTO userDTO = new UserDTO(user.getUserID(), user.getUsername());
-                    post_comments.add(new CommentDTO(userDTO, comment.getPostID(), comment.getMessage()));
-                }
+            // get all comments for a post
+            ArrayList<Comment> post_comments = commentRepository.findAllByPostID(post.getPostID());
+            ArrayList<CommentDTO> post_comments_dto = new ArrayList<>();
+            // for each post comment, create a CommentDTO
+            for(Comment comment : post_comments) {
+                User user = userRepository.findById(comment.getUserID()).get();
+                UserDTO userDTO = new UserDTO(user.getUserID(), user.getUsername());
+                post_comments_dto.add(new CommentDTO(userDTO, comment.getPostID(), comment.getMessage()));
             }
-
-            posts_with_comments.add(new PostWithComments(post, post_comments));
+            // add to post_with_comment
+            posts_with_comments.add(new PostWithComments(post, post_comments_dto));
         }
 
         // return only posts for the specified user

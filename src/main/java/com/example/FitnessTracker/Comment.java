@@ -3,6 +3,8 @@ package com.example.FitnessTracker;
 import javax.persistence.*;
 
 @Entity
+@NamedQuery(name = "Comment.findAllByPostID",
+        query = "select c from Comment c where c.postID = ?1")
 public class Comment {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

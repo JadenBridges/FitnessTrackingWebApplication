@@ -7,6 +7,9 @@ import java.util.List;
 @Entity
 @NamedQuery(name = "Post.findByActivityID",
         query = "select p from Post p where p.activity.activityID = ?1")
+@NamedQuery(name = "Post.findAllByUserID",
+        query = "select p from Post p where p.activity.userID = ?1")
+
 public class Post {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
