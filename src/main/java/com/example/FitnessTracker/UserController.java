@@ -10,8 +10,13 @@ import java.util.ArrayList;
 
 @RestController
 public class UserController {
-    @Autowired
+
     private UserRepository userRepository;
+
+    @Autowired
+    public UserController(UserRepository repo){
+        userRepository = repo;
+    }
 
     //---------------------------------------------------------------
     // Method:  createUser
