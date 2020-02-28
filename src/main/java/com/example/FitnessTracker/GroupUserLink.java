@@ -11,6 +11,13 @@ public class GroupUserLink {
     private int groupID;
     private int userID;
 
+    public GroupUserLink(){}
+
+    public GroupUserLink(int groupID, int userID){
+        this.groupID = groupID;
+        this.userID = userID;
+    }
+
     public Integer getLinkID() {
         return linkID;
     }

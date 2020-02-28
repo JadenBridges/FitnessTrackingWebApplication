@@ -20,7 +20,6 @@ public class GroupFeedController
     @Autowired
     private GroupUserLinkRepository groupUserLinkRepository;
 
-    private DatabaseUtility databaseUtility = new DatabaseUtility();
     private int gulid = 0;
     private int gID = 0;
 
@@ -39,6 +38,10 @@ public class GroupFeedController
         ArrayList<PostWithComments> posts_with_comments = new ArrayList<>();
 
         // get the correct group
+        if (!groupRepository.findById(groupID).isPresent()){
+            return null;
+        }
+
         _Group correctGroup = groupRepository.findById(groupID).get();
 
         ArrayList<User> groupUsers = new ArrayList<User>();
@@ -50,6 +53,9 @@ public class GroupFeedController
             if(correctGroup.getGroupID() == link.getGroupID()){
                 groupUsers.add(userRepository.findById(link.getUserID()).get());
             }
+        }
+        if (groupUsers == null){
+            return null;
         }
 
         boolean partOfGroup;
@@ -103,12 +109,10 @@ public class GroupFeedController
     public int updatePostLikes(@RequestParam(name="postID") int postID) {
         int likes = -1;
 
-        Post post = databaseUtility.getPostById(postID);
-
-        // if the post exists
-        if(post != null) {
+        if (postRepository.findById(postID).isPresent()) {
+            Post post = postRepository.findById(postID).get();
             // increment the number of its likes
-            post.setLikes(post.getLikes()+1);
+            post.setLikes(post.getLikes() + 1);
             // update the post entry in the database with the new number of likes
             postRepository.save(post);
             // get the new number of likes
@@ -125,8 +129,14 @@ public class GroupFeedController
     // Output:  int (1 for successful delete, 0 for failure to delete)
     //---------------------------------------------------------------
     @PostMapping("/groupfeed/comment-post")
-    public void createPostComment(@RequestBody Comment comment) {
+    public int createPostComment(@RequestBody Comment comment) {
+        if(comment.getPostID() < 0 || comment.getUserID() < 0)
+        {
+            return -1;
+        }
         commentRepository.save(comment);
+
+        return 0;
     }
 
     //---------------------------------------------------------------
@@ -140,13 +150,14 @@ public class GroupFeedController
     public int deletePost(@RequestParam(name="postID") int postID, @RequestParam(name="userID") int userID) {
         int is_deleted = 0;
 
-        Post post = databaseUtility.getPostById(postID);
-
-        // if the post exists and the userID matches that of the userID passed in
-        if((post != null) && (post.getActivity().getUserID() == userID)) {
-            // delete the post
-            postRepository.delete(post);
-            is_deleted = 1;
+        if(postRepository.findById(postID).isPresent()) {
+            Post post = postRepository.findById(postID).get();
+            // if the post exists and the userID matches that of the userID passed in
+            if (post.getActivity().getUserID() == userID) {
+                // delete the post
+                postRepository.delete(post);
+                is_deleted = 1;
+            }
         }
 
         return is_deleted;
@@ -160,12 +171,15 @@ public class GroupFeedController
     //---------------------------------------------------------------
     @PostMapping("/groupfeed/adduser")
     public int addUserToGroup(@RequestParam(name="userID") int userID, @RequestParam(name="groupID") int groupID) {
+        if (!groupRepository.findById(groupID).isPresent())
+        {
+            return -1;
+        }
         // add user to group
         GroupUserLink gul = new GroupUserLink();
         gul.setGroupID(groupID);
         gul.setUserID(userID);
         groupUserLinkRepository.save(gul);
-
         return gul.getLinkID();
     }
 
@@ -196,10 +210,13 @@ public class GroupFeedController
     // Method:  createGroup
     // Purpose: To create a group for users to join
     // Inputs:  userID
-    // Output:  int (1 for successful delete, 0 for failure to delete)
+    // Output:  groupID
     //---------------------------------------------------------------
     @PostMapping("/groupfeed/create")
     public int createGroup(@RequestParam(name="userID") int userID) {
+        if (!userRepository.findById(userID).isPresent()){
+            return -1;
+        }
         _Group group = new _Group();
         group.setOwner(userID);
         //group.setGroupID(gID);

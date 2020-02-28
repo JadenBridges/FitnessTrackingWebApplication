@@ -14,6 +14,14 @@ public class Comment {
 
     private String message;
 
+    public Comment(){}
+
+    public Comment(int postID, int userID, String message){
+        this.postID = postID;
+        this.userID = userID;
+        this.message = message;
+    }
+
     public Integer getCommentID() {
         return commentID;
     }
