@@ -32,14 +32,14 @@ public class UserTests {
     //Create a new user Test
     @Test
     void happyGetUser(){
-    Integer input = userController.createUser("test","test");
+        Integer input = userController.createUser("uniqueusername","test");
         Assertions.assertEquals(input,1);
     }
 
     //try to create new account with existing username
     @Test
     void unhappyGetUser(){
-        Integer input = userController.createUser("test","test");
+        Integer input = userController.createUser("uniqueusername","test");
         Assertions.assertEquals(input,0);
 
     }

@@ -8,13 +8,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class SummaryTests {
     private final SummaryRepository summaryRepository;
+    private final UserRepository userRepository;
     private final SummaryController summaryController;
 
 
     @Autowired
-    public SummaryTests( SummaryController sc,SummaryRepository sr){
+    public SummaryTests( SummaryController sc,SummaryRepository sr, UserRepository ur){
         summaryRepository = sr;
         summaryController =sc;
+        userRepository = ur;
     }
     //-------------------------------------------------------------------------
     // Controller: SummaryController
@@ -25,16 +27,18 @@ public class SummaryTests {
     //-------------------------------------------------------------------------
     @Test
     void happyGetSummary(){
+        User user = new User("uniqueuser2", "pwd");
+        userRepository.save(user);
         Summary summary = new Summary();
-        summary.setUserID(1);
+        summary.setUserID(user.getUserID());
         summary.setPace(420.2);
         summary.setDistance(10.0);
         summaryRepository.save(summary);
 
-        String input = summaryController.getSummary(1);
-        Assertions.assertEquals(input,"Total distance of this user:20.0\n" +
+        String input = summaryController.getSummary(user.getUserID());
+        Assertions.assertEquals("Total distance of this user:10.0\n" +
                 "Longest run of this user:10.0\n" +
-                "Fastest run of this user:07:0");
+                "Fastest run of this user:00:0", input);
     }
     //passing in an invalid userID
     @Test
