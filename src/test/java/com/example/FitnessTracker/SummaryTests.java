@@ -26,13 +26,14 @@ public class SummaryTests {
     @Test
     void happyGetSummary(){
         Summary summary = new Summary();
+        summary.setSummaryID(1);
         summary.setUserID(1);
         summary.setPace(420.2);
         summary.setDistance(10.0);
         summaryRepository.save(summary);
 
         String input = summaryController.getSummary(1);
-        Assertions.assertEquals(input,"Total distance of this user:20.0\n" +
+        Assertions.assertEquals(input,"Total distance of this user:10.0\n" +
                 "Longest run of this user:10.0\n" +
                 "Fastest run of this user:07:0");
     }
