@@ -77,6 +77,7 @@ public class ActivityController {
         if(activityRepository.findById(activityID).isPresent()){
             postRepository.delete(postRepository.findByActivityID(activityID));
             activityRepository.delete(activityRepository.findById(activityID).get());
+            //implement remove summary here
             return 1;
         }
         return -1;

@@ -26,8 +26,8 @@ public class SummaryController {
     //---------------------------------------------------------------
     @GetMapping("/summary/get")
     public String getSummary(@RequestParam Integer userID) {
-        Double distance = 0.0;
-        Double pace=0.0;
+        double distance = 0.0;
+        double pace=0.0;
         int[] input= {1,2};
 
         ArrayList<Summary> summaries = (ArrayList<Summary>) summaryRepository.findAll();
@@ -47,16 +47,16 @@ public class SummaryController {
 
     //---------------------------------------------------------------
     // Method:  updateSummary
-    // Purpose: To update summary of a specific userID
-    // Inputs:  activityID, description,distance,hours,minutes,seconds
-    // Output:  activtyID of summary being updated else zero
+    // Purpose: To update summary of a specific activity
+    // Inputs:  activity
+    // Output:
     //---------------------------------------------------------------
 
     public void updateSummary(Activity activity) {
-        Double pace;
-        Boolean flag = false;
+        double pace;
+        boolean flag = false;
 
-        Integer time;
+        int time;
         time = activity.getHours() * 3600 + activity.getMinutes() * 60 + activity.getSeconds();
         pace = time / activity.getDistance();
         ArrayList<Summary> summaries = (ArrayList<Summary>) summaryRepository.findAll();
@@ -77,6 +77,27 @@ public class SummaryController {
         }
 
     }
+    //---------------------------------------------------------------
+    // Method:  removeSummary
+    // Purpose: To remove summary of a specific activity
+    // Inputs:  activity
+    // Output:
+    //---------------------------------------------------------------
+    public void removeSummary(Activity activity){
+        double pace;
+        int time;
+        time = activity.getHours() * 3600 + activity.getMinutes() * 60 + activity.getSeconds();
+        pace = time / activity.getDistance();
+        ArrayList<Summary> summaries = (ArrayList<Summary>) summaryRepository.findAll();
+        for (Summary summary : summaries) {
+        if(activity.getUserID() == summary.getUserID()){
+            summary.setTotal_distance(summary.getTotal_distance()-activity.getDistance());
+            if(summary.getPace()==pace)
+                summary.setPace(0.0);
+            }
+        }
+        }
+
 
     public static int[] splitToComponentTimes(Double input)
     {

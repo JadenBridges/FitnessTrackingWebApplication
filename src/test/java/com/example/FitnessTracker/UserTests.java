@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+
 @SpringBootTest
 public class UserTests {
 
@@ -31,16 +33,19 @@ public class UserTests {
 
     //Create a new user Test
     @Test
-    void happyGetUser(){
-        Integer input = userController.createUser("uniqueusername","test");
-        Assertions.assertEquals(input,1);
+    void happyGetUser() {
+        Integer input = userController.createUser("uniqueusername", "test");
+        Assertions.assertEquals(1, input);
+        userController.removeUser("uniqueusername");
     }
 
     //try to create new account with existing username
     @Test
     void unhappyGetUser(){
-        Integer input = userController.createUser("uniqueusername","test");
-        Assertions.assertEquals(input,0);
+        User user = new User("uniqueusername1", "test");
+        userRepository.save(user);
+        Integer input = userController.createUser("uniqueusername1","test");
+        Assertions.assertEquals(0,input);
 
     }
 
@@ -59,7 +64,7 @@ public class UserTests {
         User user = new User("test", "pass");
         userRepository.save(user);
         Integer input = userController.loginUser("fakeusername","fakepassword");
-        Assertions.assertEquals(input,1);
+        Assertions.assertEquals(0,input);
     }
     //Invalid Password
     @Test
@@ -67,6 +72,21 @@ public class UserTests {
         User user = new User("test2", "pass");
         userRepository.save(user);
         Integer input = userController.loginUser("test2","fakepassword");
-        Assertions.assertEquals(input,1);
+        Assertions.assertEquals(0,input);
+    }
+// Delete an existing user
+    @Test
+    void happyDelete(){
+        User user = new User("uniqueusername2", "pass");
+        userRepository.save(user);
+        Integer input = userController.removeUser("uniqueusername2");
+        Assertions.assertEquals(1,input);
+
+    }
+    //Delete a user that does not exist
+    @Test
+    void unhappyDelete(){
+        Integer input = userController.removeUser("uniqueusername2");
+        Assertions.assertEquals(0,input);
     }
 }

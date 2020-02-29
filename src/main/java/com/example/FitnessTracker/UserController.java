@@ -1,10 +1,7 @@
 package com.example.FitnessTracker;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
@@ -21,8 +18,8 @@ public class UserController {
     //---------------------------------------------------------------
     // Method:  createUser
     // Purpose: To create a new user
-    // Inputs:  username
-    // Output:  password
+    // Inputs:  username,password
+    // Output:  1 if succesful 0 if fails
     //---------------------------------------------------------------
     @PostMapping("/user/create")
     public int createUser(@RequestParam String username, @RequestParam String password){
@@ -40,7 +37,7 @@ public class UserController {
     // Method:  userLogin
     // Purpose: To login as a specific user
     // Inputs:  username,password
-    // Output:  1 if successful, 0 if not
+    // Output:  0 if fails, userid if succesful
     //---------------------------------------------------------------
 
     @GetMapping ("user/login")
@@ -53,7 +50,24 @@ public class UserController {
                 }
             }
         }
-        return 1;
+        return 0;
+    }
+    //---------------------------------------------------------------
+    // Method:  removeUser
+    // Purpose: To delete  a specific user
+    // Inputs:  username
+    // Output:  0 if fails, 1 if succesful
+    //---------------------------------------------------------------
+    @DeleteMapping("/user/delete")
+    public int removeUser(@RequestParam String username) {
+        ArrayList<User> userArrayList = (ArrayList<User>) userRepository.findAll();
+        for(User user1 : userArrayList) {
+            if (user1.getUsername().equals(username)){
+                userRepository.deleteById(user1.getUserID());
+                return 1;
+            }
+        }
+        return 0;
     }
 
 }
