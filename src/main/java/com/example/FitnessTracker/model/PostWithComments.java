@@ -1,22 +1,24 @@
 package com.example.FitnessTracker;
 
+import com.example.FitnessTracker.model.Comment;import com.example.FitnessTracker.model.CommentDTO;
+
 import java.util.ArrayList;
 
 public class PostWithComments {
 
-    private Post post;
+    private Comment.Post post;
     private ArrayList<CommentDTO> comments;
 
-    public PostWithComments(Post _post, ArrayList<CommentDTO> _comments) {
+    public PostWithComments(Comment.Post _post, ArrayList<CommentDTO> _comments) {
         post = _post;
         comments = _comments;
     }
 
-    public Post getPost() {
+    public Comment.Post getPost() {
         return post;
     }
 
-    public void setPost(Post post) {
+    public void setPost(Comment.Post post) {
         this.post = post;
     }
 

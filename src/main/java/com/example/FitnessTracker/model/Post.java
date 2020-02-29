@@ -1,8 +1,8 @@
 package com.example.FitnessTracker;
 
+import com.example.FitnessTracker.model.Activity;
+
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @NamedQuery(name = "Post.findByActivityID",
