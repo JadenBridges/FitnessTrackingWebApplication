@@ -1,12 +1,13 @@
 package com.example.FitnessTracker;
 
 
+import com.example.FitnessTracker.controllers.UserController;
+import com.example.FitnessTracker.model.User;
+import com.example.FitnessTracker.model.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.ArrayList;
 
 @SpringBootTest
 public class UserTests {

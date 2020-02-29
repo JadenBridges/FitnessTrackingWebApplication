@@ -1,4 +1,4 @@
-package com.example.FitnessTracker;
+package com.example.FitnessTracker.model;
 
 import javax.persistence.*;
 import java.util.List;

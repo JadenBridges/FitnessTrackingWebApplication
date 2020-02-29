@@ -1,11 +1,11 @@
-package com.example.FitnessTracker;
+package com.example.FitnessTracker.model;
 
-import com.example.FitnessTracker.model.Comment;import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.ArrayList;
 
-public interface PostRepository extends CrudRepository<Comment.Post, Integer> {
+public interface PostRepository extends CrudRepository<Post, Integer> {
 
-    Comment.Post findByActivityID(int activityid);
-    ArrayList<Comment.Post> findAllByUserID(int userid);
+    Post findByActivityID(int activityid);
+    ArrayList<Post> findAllByUserID(int userid);
 }

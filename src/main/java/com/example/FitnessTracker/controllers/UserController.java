@@ -1,5 +1,7 @@
-package com.example.FitnessTracker;
+package com.example.FitnessTracker.controllers;
 
+import com.example.FitnessTracker.model.User;
+import com.example.FitnessTracker.model.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +28,7 @@ public class UserController {
         ArrayList<User> userArrayList = (ArrayList<User>) userRepository.findAll();
         for(User user1 : userArrayList) {
             if(user1.getUsername().equals(username))
-                return 0;
+                return -1;
         }
         User n = new User(username, password);
         userRepository.save(n);
@@ -50,7 +52,7 @@ public class UserController {
                 }
             }
         }
-        return 0;
+        return -1;
     }
     //---------------------------------------------------------------
     // Method:  removeUser
@@ -67,7 +69,7 @@ public class UserController {
                 return 1;
             }
         }
-        return 0;
+        return -1;
     }
 
 }

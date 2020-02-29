@@ -1,9 +1,8 @@
-package com.example.FitnessTracker;
+package com.example.FitnessTracker.controllers;
 
+import com.example.FitnessTracker.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 public class ActivityController {
@@ -13,7 +12,6 @@ public class ActivityController {
     private PostRepository postRepository;
     @Autowired
     private UserRepository userRepository;
-    private DatabaseUtility databaseUtility = new DatabaseUtility();
     @Autowired
     private SummaryController summaryController;
 
@@ -47,10 +45,9 @@ public class ActivityController {
     //---------------------------------------------------------------
     @PutMapping("/activity/update")
     public int updateActivity(@RequestParam int activityID, @RequestBody Activity activity) {
-        if(activity.getDistance() < 0 || activity.getHours() < 0 || activity.getMinutes() < 0 || activity.getSeconds() < 0){
+        if (activity.getDistance() < 0 || activity.getHours() < 0 || activity.getMinutes() < 0 || activity.getSeconds() < 0) {
             return -1;
-        }
-        else if(activityRepository.findById(activityID).isPresent()){
+        } else if (activityRepository.findById(activityID).isPresent()) {
             Activity oldActivity = activityRepository.findById(activityID).get();
             oldActivity.setUserID(activity.getUserID());
             oldActivity.setTitle(activity.getTitle());
@@ -65,25 +62,4 @@ public class ActivityController {
 
         return -1;
     }
-
-    //---------------------------------------------------------------
-    // Method:  deleteActivity
-    // Purpose: To delete an activity
-    // Inputs:  activityID
-    // Output:  void
-    //---------------------------------------------------------------
-    @DeleteMapping("/activity/delete")
-    public int deleteActivity(@RequestParam int activityID) {
-        if(activityRepository.findById(activityID).isPresent()){
-            postRepository.delete(postRepository.findByActivityID(activityID));
-            activityRepository.delete(activityRepository.findById(activityID).get());
-            //implement remove summary here
-            return 1;
-        }
-        return -1;
-    }
-
-
-
-
 }

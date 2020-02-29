@@ -1,9 +1,9 @@
-package com.example.FitnessTracker;
+package com.example.FitnessTracker.controllers;
 
+import com.example.FitnessTracker.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 @RestController
@@ -12,6 +12,8 @@ public class GroupFeedController
     @Autowired
     private GroupRepository groupRepository;
     @Autowired
+    private ActivityRepository activityRepository;
+    @Autowired
     private PostRepository postRepository;
     @Autowired
     private CommentRepository commentRepository;
@@ -19,6 +21,8 @@ public class GroupFeedController
     private UserRepository userRepository;
     @Autowired
     private GroupUserLinkRepository groupUserLinkRepository;
+    @Autowired
+    private SummaryController summaryController;
 
     private int gulid = 0;
     private int gID = 0;
@@ -155,7 +159,10 @@ public class GroupFeedController
             // if the post exists and the userID matches that of the userID passed in
             if (post.getActivity().getUserID() == userID) {
                 // delete the post
+                int activityID = postRepository.findById(postID).get().getActivity().getActivityID();
+                summaryController.removeSummary(activityRepository.findById(activityID).get());
                 postRepository.delete(post);
+                activityRepository.deleteById(activityID);
                 is_deleted = 1;
             }
         }

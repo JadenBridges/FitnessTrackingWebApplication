@@ -1,4 +1,4 @@
-package com.example.FitnessTracker;
+package com.example.FitnessTracker.model;
 
 import org.springframework.data.repository.CrudRepository;
 

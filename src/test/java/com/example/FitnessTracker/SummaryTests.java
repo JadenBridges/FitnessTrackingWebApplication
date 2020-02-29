@@ -1,5 +1,9 @@
 package com.example.FitnessTracker;
 
+import com.example.FitnessTracker.controllers.SummaryController;
+import com.example.FitnessTracker.model.Summary;
+import com.example.FitnessTracker.model.SummaryRepository;
+import com.example.FitnessTracker.model.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

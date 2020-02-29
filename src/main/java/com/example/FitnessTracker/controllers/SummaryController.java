@@ -1,5 +1,8 @@
-package com.example.FitnessTracker;
+package com.example.FitnessTracker.controllers;
 
+import com.example.FitnessTracker.model.SummaryRepository;
+import com.example.FitnessTracker.model.Activity;
+import com.example.FitnessTracker.model.Summary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,6 +69,9 @@ public class SummaryController {
                 summary.setTotal_distance(summary.getTotal_distance() + activity.getDistance());
                 if (summary.getPace() > pace)
                     summary.setPace(pace);
+                else if (summary.getPace() == 0){
+                    summary.setPace(pace);
+                }
             }
         }
         if (!flag) {

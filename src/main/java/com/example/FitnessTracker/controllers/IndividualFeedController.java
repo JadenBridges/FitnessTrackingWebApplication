@@ -1,12 +1,10 @@
-package com.example.FitnessTracker;
+package com.example.FitnessTracker.controllers;
 
-import org.hibernate.dialect.Database;
+import com.example.FitnessTracker.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -15,11 +13,14 @@ public class IndividualFeedController {
     @Autowired
     private PostRepository postRepository;
     @Autowired
+    private ActivityRepository activityRepository;
+    @Autowired
     private CommentRepository commentRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    SummaryController summaryController;
 
-    private DatabaseUtility databaseUtility = new DatabaseUtility();
 
     //---------------------------------------------------------------
     // Method:  getPosts
@@ -131,7 +132,10 @@ public class IndividualFeedController {
         // if the post exists and the userID matches that of the userID passed in
         if(post.getActivity().getUserID() == userID) {
             // delete the post
+            int activityID = postRepository.findById(postID).get().getActivity().getActivityID();
+            summaryController.removeSummary(activityRepository.findById(activityID).get());
             postRepository.delete(post);
+            activityRepository.deleteById(activityID);
             is_deleted = 1;
         }
 

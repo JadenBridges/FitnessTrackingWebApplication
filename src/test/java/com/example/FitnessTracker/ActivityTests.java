@@ -1,5 +1,7 @@
 package com.example.FitnessTracker;
 
+import com.example.FitnessTracker.controllers.ActivityController;
+import com.example.FitnessTracker.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,54 +135,4 @@ class ActivityTests {
 		postRepository.delete(postRepository.findByActivityID(testActivity.getActivityID()));
 		activityRepository.delete(testActivity);
 	}
-
-	@Test
-	void testDeleteActivity1() {
-		User u = new User("test", "pass");
-		userRepository.save(u);
-
-		Activity testActivity = new Activity(u.getUserID(), "MyTitle", "MyDescription", 3.1, 0, 16, 5);
-		activityController.createActivity(testActivity);
-
-		Assertions.assertTrue(activityRepository.findById(testActivity.getActivityID()).isPresent());
-		activityController.deleteActivity(testActivity.getActivityID());
-		Assertions.assertFalse(activityRepository.findById(testActivity.getActivityID()).isPresent());
-
-		userRepository.delete(u);
-	}
-
-	@Test
-	void testDeleteActivity2() {
-		User u = new User("test", "pass");
-		userRepository.save(u);
-
-		Activity testActivity = new Activity(u.getUserID(), "MyTitle", "MyDescription", 3.1, 0, 16, 5);
-		activityController.createActivity(testActivity);
-
-		Assertions.assertTrue(activityRepository.findById(testActivity.getActivityID()).isPresent());
-		Assertions.assertEquals(-1, activityController.deleteActivity(-1));
-
-		userRepository.delete(u);
-		postRepository.delete(postRepository.findByActivityID(testActivity.getActivityID()));
-		activityRepository.delete(testActivity);
-	}
-
-	@Test
-	void testDeleteActivity3() {
-		User u = new User("test", "pass");
-		userRepository.save(u);
-
-		Activity testActivity = new Activity(u.getUserID(), "MyTitle", "MyDescription", 3.1, 0, 16, 5);
-		activityController.createActivity(testActivity);
-
-		Assertions.assertTrue(activityRepository.findById(testActivity.getActivityID()).isPresent());
-		Assertions.assertEquals(-1, activityController.deleteActivity(2147483647));
-
-		userRepository.delete(u);
-		postRepository.delete(postRepository.findByActivityID(testActivity.getActivityID()));
-		activityRepository.delete(testActivity);
-	}
-
-
-
 }
