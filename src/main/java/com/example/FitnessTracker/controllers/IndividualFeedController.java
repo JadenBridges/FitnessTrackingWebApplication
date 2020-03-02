@@ -106,7 +106,7 @@ public class IndividualFeedController {
 
         commentRepository.save(comment);
 
-        return 0;
+        return 1;
     }
 
     //---------------------------------------------------------------

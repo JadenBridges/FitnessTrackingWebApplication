@@ -1,5 +1,6 @@
 package com.example.FitnessTracker.controllers;
 
+import com.example.FitnessTracker.model.ActivityRepository;
 import com.example.FitnessTracker.model.SummaryRepository;
 import com.example.FitnessTracker.model.Activity;
 import com.example.FitnessTracker.model.Summary;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.AccessibleObject;
 import java.util.ArrayList;
 
 //import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
@@ -15,9 +17,11 @@ import java.util.ArrayList;
 @RestController
 public class SummaryController {
     private final SummaryRepository summaryRepository;
+    private final ActivityRepository activityRepository;
     @Autowired
-    public SummaryController(SummaryRepository repo){
+    public SummaryController(SummaryRepository repo, ActivityRepository actRepo){
         summaryRepository = repo;
+        activityRepository = actRepo;
     }
 
 
@@ -96,13 +100,40 @@ public class SummaryController {
         pace = time / activity.getDistance();
         ArrayList<Summary> summaries = (ArrayList<Summary>) summaryRepository.findAll();
         for (Summary summary : summaries) {
-        if(activity.getUserID() == summary.getUserID()){
-            summary.setTotal_distance(summary.getTotal_distance()-activity.getDistance());
-            if(summary.getPace()==pace)
-                summary.setPace(0.0);
+            if(activity.getUserID() == summary.getUserID()){
+                summary.setTotal_distance(summary.getTotal_distance()-activity.getDistance());
+                if(summary.getPace()==pace){
+                    ArrayList<Activity> allActivities = (ArrayList<Activity>) activityRepository.findAll();
+                    boolean paceSet = false;
+                    for(Activity a : allActivities){
+                        if(a.getUserID() == summary.getUserID() && a.getActivityID() != activity.getActivityID()){
+                            if(!paceSet){
+                                pace = getPace(a);
+                                summary.setPace(pace);
+                                paceSet = true;
+                            }
+                            if(getPace(a) < pace){
+                                pace = getPace(a);
+                                summary.setPace(pace);
+                            }
+                        }
+                    }
+                    if(!paceSet)
+                        summary.setPace(0.0);
+                }
             }
         }
-        }
+    }
+
+    private double getPace(Activity a){
+        double pace;
+        int time;
+        time = a.getHours() * 3600 + a.getMinutes() * 60 + a.getSeconds();
+        pace = time / a.getDistance();
+        return pace;
+    }
+
+
 
 
     public static int[] splitToComponentTimes(Double input)
