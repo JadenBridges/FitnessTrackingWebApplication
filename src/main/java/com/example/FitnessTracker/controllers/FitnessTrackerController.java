@@ -12,12 +12,12 @@ public class FitnessTrackerController {
 
     public FitnessTrackerController(){}
 
-    @GetMapping("/index")
-    public String index(Model m) {
+    @GetMapping("/feeds")
+    public String feeds(Model m) {
         Map<String, String> map = new HashMap<>();
         String t = "Spring <b>Boot</b>";
         map.put("spring", t);
         m.mergeAttributes(map);
-        return "index";
+        return "feeds";
     }
 }
