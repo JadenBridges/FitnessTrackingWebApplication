@@ -232,4 +232,25 @@ public class GroupFeedController
 
         return group.getGroupID();
     }
+
+    //---------------------------------------------------------------
+    // Method:  getGroups
+    // Purpose: To create a group for users to join
+    // Inputs:  userID
+    // Output:  groupID
+    //---------------------------------------------------------------
+    @PostMapping("/groupfeed/getgroups")
+    public ArrayList<_Group> getGroups(@RequestParam(name="userID") int userID) {
+        if (!userRepository.findById(userID).isPresent()){
+            return null;
+        }
+        ArrayList<GroupUserLink> links = (ArrayList<GroupUserLink>)groupUserLinkRepository.findAll();
+        ArrayList<_Group> userGroups = new ArrayList<_Group>();
+        for(GroupUserLink link : links){
+            if (link.getUserID() == userID){
+                userGroups.add(groupRepository.findById(link.getGroupID()).get());
+            }
+        }
+        return userGroups;
+    }
 }
