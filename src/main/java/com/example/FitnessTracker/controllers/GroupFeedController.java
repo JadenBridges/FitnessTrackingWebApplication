@@ -239,7 +239,7 @@ public class GroupFeedController
     // Inputs:  userID
     // Output:  groupID
     //---------------------------------------------------------------
-    @PostMapping("/groupfeed/getgroups")
+    @GetMapping("/groupfeed/getgroups")
     public ArrayList<_Group> getGroups(@RequestParam(name="userID") int userID) {
         if (!userRepository.findById(userID).isPresent()){
             return null;
