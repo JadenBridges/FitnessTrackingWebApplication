@@ -72,4 +72,39 @@ public class UserController {
         return -1;
     }
 
+    //---------------------------------------------------------------
+    // Method:  getUserID
+    // Purpose: To obtain the user id of a user based off their
+    //          username
+    // Inputs:  username
+    // Output:  0 if fails, 1 if successful
+    //---------------------------------------------------------------
+    @GetMapping("/user/getuserid")
+    public int getUserID(@RequestParam String username) {
+        ArrayList<User> userArrayList = (ArrayList<User>) userRepository.findAll();
+        for(User user1 : userArrayList) {
+            if (user1.getUsername().equals(username)){
+                return user1.getUserID();
+            }
+        }
+        return -1;
+    }
+
+    //---------------------------------------------------------------
+    // Method:  getUsername
+    // Purpose: To obtain the username of a user based off their
+    //          user id
+    // Inputs:  user id
+    // Output:  0 if fails, 1 if successful
+    //---------------------------------------------------------------
+    @GetMapping("/user/getusername")
+    public String getUsername(@RequestParam int userid) {
+        ArrayList<User> userArrayList = (ArrayList<User>) userRepository.findAll();
+        for(User user1 : userArrayList) {
+            if (user1.getUserID() == userid) {
+                return user1.getUsername();
+            }
+        }
+        return "";
+    }
 }
