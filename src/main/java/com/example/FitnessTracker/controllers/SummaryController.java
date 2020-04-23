@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.AccessibleObject;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 //import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
 
@@ -39,15 +40,13 @@ public class SummaryController {
 
         ArrayList<Summary> summaries = (ArrayList<Summary>) summaryRepository.findAll();
 
-
-        for(Summary summary : summaries ){
-            if(summary.getUserID()==userID){
-                distance = summary.getTotal_distance();
-                pace = summary.getPace();
+        for(int i = 0; i < summaries.size(); i++){
+            if(summaries.get(i).getUserID()==userID) {
+                distance = summaries.get(i).getTotal_distance();
+                pace = summaries.get(i).getPace();
                 input = splitToComponentTimes(pace);
-                return "Total distance of this user:" + distance + "\n" +"Quickest run of user: " + input[0] + input[1]+":"+input[2];
+                return "Total distance of this user:" + distance + "\n" + "Quickest run of user: " + input[0] + input[1] + ":" + input[2];
             }
-            else return "No available data on user";
         }
         return "No available data on user";
     }
@@ -76,6 +75,7 @@ public class SummaryController {
                 else if (summary.getPace() == 0){
                     summary.setPace(pace);
                 }
+                summaryRepository.save(summary);
             }
         }
         if (!flag) {
