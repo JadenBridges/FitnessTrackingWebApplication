@@ -100,10 +100,10 @@ public class UserController {
     // Output:  0 if fails, 1 if successful
     //---------------------------------------------------------------
     @GetMapping("/user/getusername")
-    public String getUsername(@RequestParam int userid) {
+    public String getUsername(@RequestParam int userID) {
         ArrayList<User> userArrayList = (ArrayList<User>) userRepository.findAll();
         for(User user1 : userArrayList) {
-            if (user1.getUserID() == userid) {
+            if (user1.getUserID() == userID) {
                 return user1.getUsername();
             }
         }
