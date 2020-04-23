@@ -37,7 +37,7 @@ public class UserTests {
     void happyGetUser() {
         Integer input = userController.createUser("uniqueusername", "test");
         Assertions.assertEquals(1, input);
-        userController.removeUser("uniqueusername");
+        userController.removeUser("uniqueusername", "test");
     }
 
     //try to create new account with existing username
@@ -80,14 +80,14 @@ public class UserTests {
     void happyDelete(){
         User user = new User("uniqueusername2", "pass");
         userRepository.save(user);
-        Integer input = userController.removeUser("uniqueusername2");
+        Integer input = userController.removeUser("uniqueusername2", "pass");
         Assertions.assertEquals(1,input);
 
     }
     //Delete a user that does not exist
     @Test
     void unhappyDelete(){
-        Integer input = userController.removeUser("uniqueusername2");
+        Integer input = userController.removeUser("uniqueusername2", "password");
         Assertions.assertEquals(0,input);
     }
 }

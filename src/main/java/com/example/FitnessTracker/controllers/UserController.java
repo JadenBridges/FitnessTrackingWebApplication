@@ -61,12 +61,14 @@ public class UserController {
     // Output:  0 if fails, 1 if succesful
     //---------------------------------------------------------------
     @DeleteMapping("/user/delete")
-    public int removeUser(@RequestParam String username) {
+    public int removeUser(@RequestParam String username, @RequestParam String password) {
         ArrayList<User> userArrayList = (ArrayList<User>) userRepository.findAll();
         for(User user1 : userArrayList) {
             if (user1.getUsername().equals(username)){
-                userRepository.deleteById(user1.getUserID());
-                return 1;
+                if(user1.getPassword().equals(password)) {
+                    userRepository.deleteById(user1.getUserID());
+                    return 1;
+                }
             }
         }
         return -1;
