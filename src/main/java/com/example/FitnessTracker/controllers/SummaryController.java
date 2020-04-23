@@ -121,6 +121,7 @@ public class SummaryController {
                     if(!paceSet)
                         summary.setPace(0.0);
                 }
+                summaryRepository.save(summary);
             }
         }
     }
